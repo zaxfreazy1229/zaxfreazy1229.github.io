@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>自動滑動相簿</title>
+    <title>3行獨立滑動相簿</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -10,13 +10,32 @@
             padding: 20px;
             margin: 0;
         }
+        
         h1 {
             color: #333;
             margin-bottom: 10px;
         }
+        
         .subtitle {
             color: #666;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+        }
+        
+        /* 每一行的容器 */
+        .row {
+            margin-bottom: 50px;
+        }
+        
+        .row-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 15px;
+            text-align: left;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 20px;
         }
         
         /* 水平滾動容器 */
@@ -27,7 +46,7 @@
             padding: 20px 0;
             scroll-behavior: smooth;
             cursor: grab;
-            scrollbar-width: thin;
+            border-radius: 15px;
         }
         
         .scroll-container:active {
@@ -36,7 +55,7 @@
         
         /* 滾動條樣式 */
         .scroll-container::-webkit-scrollbar {
-            height: 10px;
+            height: 8px;
         }
         
         .scroll-container::-webkit-scrollbar-track {
@@ -53,21 +72,20 @@
             background: #555;
         }
         
-        /* 照片卡片 */
+        /* 照片卡片容器 */
         .gallery {
             display: inline-flex;
             gap: 20px;
             padding: 0 20px;
         }
         
+        /* 照片卡片 */
         .photo {
             background: white;
             padding: 15px;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            width: auto;
-            max-width: 350px;
-            min-width: 250px;
+            width: 280px;
             display: inline-block;
             white-space: normal;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -80,9 +98,8 @@
         
         .photo img {
             width: 100%;
-            height: auto;
-            max-height: 280px;
-            object-fit: contain;
+            height: 200px;
+            object-fit: cover;
             border-radius: 8px;
         }
         
@@ -92,20 +109,22 @@
             font-size: 14px;
         }
         
-        /* 控制按鈕區域 */
-        .controls {
-            margin: 20px 0;
+        /* 導航按鈕 */
+        .nav-buttons {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
         }
         
         button {
             background-color: #333;
             color: white;
             border: none;
-            padding: 10px 20px;
-            margin: 0 10px;
+            padding: 8px 20px;
             border-radius: 30px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             transition: background-color 0.3s;
         }
         
@@ -113,237 +132,142 @@
             background-color: #555;
         }
         
-        .speed-control {
-            margin-top: 15px;
-        }
-        
-        .speed-control label {
-            color: #666;
-            margin-right: 10px;
-        }
-        
-        input {
-            padding: 5px;
-            width: 60px;
-            text-align: center;
-        }
-        
         footer {
             margin-top: 40px;
             color: #999;
             font-size: 12px;
         }
-        
-        .status {
-            margin-top: 10px;
-            color: #0077ff;
-            font-size: 14px;
-        }
     </style>
 </head>
 <body>
-    <h1>📸 自動滑動相簿</h1>
-    <p class="subtitle">歡迎來到我的伺服器！ | 共 9 張照片</p>
+    <h1>📸 我的相簿</h1>
+    <p class="subtitle">歡迎來到我的伺服器！| 共 9 張照片 | 每行獨立滑動</p>
 
-    <!-- 控制按鈕 -->
-    <div class="controls">
-        <button id="playBtn">▶ 自動播放</button>
-        <button id="pauseBtn">⏸ 暫停</button>
-        <button id="resetBtn">⟳ 回到起點</button>
-    </div>
-    
-    <div class="speed-control">
-        <label>滑動速度：</label>
-        <input type="range" id="speedSlider" min="0.5" max="5" step="0.1" value="2">
-        <span id="speedValue">2</span> 秒/張
-    </div>
-
-    <!-- 水平滾動區域 -->
-    <div class="scroll-container" id="scrollContainer">
-        <div class="gallery" id="gallery">
-            <!-- 照片 1 -->
-            <div class="photo">
-                <img src="20260208_020939000_iOS.jpg" alt="大合照" onerror="this.src='https://via.placeholder.com/300x200?text=圖片+載入失敗'">
-                <p>大合照 1</p>
+    <!-- 第一行 -->
+    <div class="row">
+        <div class="row-title">📷 第一組</div>
+        <div class="scroll-container" id="scroll1">
+            <div class="gallery">
+                <div class="photo">
+                    <img src="20260208_020939000_iOS.jpg" alt="大合照" onerror="this.src='https://via.placeholder.com/280x200?text=圖片+載入失敗'">
+                    <p>大合照 1</p>
+                </div>
+                <div class="photo">
+                    <img src="IMG_20260124_145424.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/280x200?text=圖片+載入失敗'">
+                    <p>照片 2</p>
+                </div>
+                <div class="photo">
+                    <img src="IMG_20260124_145529.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/280x200?text=圖片+載入失敗'">
+                    <p>照片 3</p>
+                </div>
             </div>
-
-            <!-- 照片 2 -->
-            <div class="photo">
-                <img src="IMG_20260124_145424.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/300x200?text=圖片+載入失敗'">
-                <p>照片 2</p>
-            </div>
-
-            <!-- 照片 3 -->
-            <div class="photo">
-                <img src="IMG_20260124_145529.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/300x200?text=圖片+載入失敗'">
-                <p>照片 3</p>
-            </div>
-
-            <!-- 照片 4 -->
-            <div class="photo">
-                <img src="IMG_20260124_140959.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/300x200?text=圖片+載入失敗'">
-                <p>照片 4</p>
-            </div>
-
-            <!-- 照片 5 -->
-            <div class="photo">
-                <img src="IMG_20260124_141207.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/300x200?text=圖片+載入失敗'">
-                <p>照片 5</p>
-            </div>
-
-            <!-- 照片 6 -->
-            <div class="photo">
-                <img src="IMG_20260124_145756.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/300x200?text=圖片+載入失敗'">
-                <p>照片 6</p>
-            </div>
-
-            <!-- 照片 7 -->
-            <div class="photo">
-                <img src="mmexport1769262363531.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/300x200?text=圖片+載入失敗'">
-                <p>照片 7</p>
-            </div>
-
-            <!-- 照片 8 -->
-            <div class="photo">
-                <img src="mmexport1769304880414.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/300x200?text=圖片+載入失敗'">
-                <p>照片 8</p>
-            </div>
-
-            <!-- 照片 9 -->
-            <div class="photo">
-                <img src="mmexport1769304889558.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/300x200?text=圖片+載入失敗'">
-                <p>照片 9</p>
-            </div>
+        </div>
+        <div class="nav-buttons">
+            <button onclick="scrollRow('scroll1', -300)">◀ 向左</button>
+            <button onclick="scrollRow('scroll1', 300)">向右 ▶</button>
         </div>
     </div>
 
-    <div class="status" id="status">⚡ 自動播放中</div>
+    <!-- 第二行 -->
+    <div class="row">
+        <div class="row-title">📷 第二組</div>
+        <div class="scroll-container" id="scroll2">
+            <div class="gallery">
+                <div class="photo">
+                    <img src="IMG_20260124_140959.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/280x200?text=圖片+載入失敗'">
+                    <p>照片 4</p>
+                </div>
+                <div class="photo">
+                    <img src="IMG_20260124_141207.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/280x200?text=圖片+載入失敗'">
+                    <p>照片 5</p>
+                </div>
+                <div class="photo">
+                    <img src="IMG_20260124_145756.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/280x200?text=圖片+載入失敗'">
+                    <p>照片 6</p>
+                </div>
+            </div>
+        </div>
+        <div class="nav-buttons">
+            <button onclick="scrollRow('scroll2', -300)">◀ 向左</button>
+            <button onclick="scrollRow('scroll2', 300)">向右 ▶</button>
+        </div>
+    </div>
+
+    <!-- 第三行 -->
+    <div class="row">
+        <div class="row-title">📷 第三組</div>
+        <div class="scroll-container" id="scroll3">
+            <div class="gallery">
+                <div class="photo">
+                    <img src="mmexport1769262363531.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/280x200?text=圖片+載入失敗'">
+                    <p>照片 7</p>
+                </div>
+                <div class="photo">
+                    <img src="mmexport1769304880414.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/280x200?text=圖片+載入失敗'">
+                    <p>照片 8</p>
+                </div>
+                <div class="photo">
+                    <img src="mmexport1769304889558.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/280x200?text=圖片+載入失敗'">
+                    <p>照片 9</p>
+                </div>
+            </div>
+        </div>
+        <div class="nav-buttons">
+            <button onclick="scrollRow('scroll3', -300)">◀ 向左</button>
+            <button onclick="scrollRow('scroll3', 300)">向右 ▶</button>
+        </div>
+    </div>
+
     <footer>
-        照片會自動左右滑動 | 滑鼠移到照片上會暫停
+        👆 每一行都可以獨立左右滑動 | 也可以直接用滑鼠拖曳
     </footer>
 
     <script>
-        const container = document.getElementById('scrollContainer');
-        const gallery = document.getElementById('gallery');
-        const statusDiv = document.getElementById('status');
-        
-        let autoScrollInterval = null;
-        let isPlaying = true;
-        let direction = 1; // 1: 向右, -1: 向左
-        let scrollSpeed = 2; // 秒
-        
-        // 獲取所有照片
-        const photos = document.querySelectorAll('.photo');
-        let currentIndex = 0;
-        
-        // 計算每張照片的寬度（包含間距）
-        function getPhotoWidth() {
-            if (photos.length === 0) return 300;
-            const firstPhoto = photos[0];
-            const style = window.getComputedStyle(firstPhoto);
-            const width = firstPhoto.offsetWidth;
-            const marginLeft = parseFloat(style.marginLeft) || 0;
-            const marginRight = parseFloat(style.marginRight) || 0;
-            const gap = 20; // gap 間距
-            return width + marginLeft + marginRight + gap;
+        // 滑動函數
+        function scrollRow(containerId, distance) {
+            const container = document.getElementById(containerId);
+            container.scrollBy({ left: distance, behavior: 'smooth' });
         }
         
-        // 滾動到下一張
-        function scrollToNext() {
-            const photoWidth = getPhotoWidth();
-            const currentScroll = container.scrollLeft;
-            const maxScroll = container.scrollWidth - container.clientWidth;
+        // 為每個滾動容器添加滑鼠拖曳功能
+        function enableDragScroll(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
             
-            let nextScroll = currentScroll + (photoWidth * direction);
+            let isDown = false;
+            let startX;
+            let scrollLeftStart;
             
-            // 到達邊界時反轉方向
-            if (nextScroll >= maxScroll) {
-                nextScroll = maxScroll;
-                direction = -1;
-                nextScroll = maxScroll - photoWidth;
-                statusDiv.innerHTML = '🔄 已到結尾，向左滑動中...';
-            } else if (nextScroll <= 0) {
-                nextScroll = 0;
-                direction = 1;
-                nextScroll = photoWidth;
-                statusDiv.innerHTML = '🔄 已到開頭，向右滑動中...';
-            } else {
-                statusDiv.innerHTML = '⚡ 自動滑動中...';
-            }
+            container.addEventListener('mousedown', (e) => {
+                isDown = true;
+                container.style.cursor = 'grabbing';
+                startX = e.pageX - container.offsetLeft;
+                scrollLeftStart = container.scrollLeft;
+            });
             
-            container.scrollTo({
-                left: nextScroll,
-                behavior: 'smooth'
+            container.addEventListener('mouseleave', () => {
+                isDown = false;
+                container.style.cursor = 'grab';
+            });
+            
+            container.addEventListener('mouseup', () => {
+                isDown = false;
+                container.style.cursor = 'grab';
+            });
+            
+            container.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - container.offsetLeft;
+                const walk = (x - startX) * 1.5;
+                container.scrollLeft = scrollLeftStart - walk;
             });
         }
         
-        // 停止自動滾動
-        function stopAutoScroll() {
-            if (autoScrollInterval) {
-                clearInterval(autoScrollInterval);
-                autoScrollInterval = null;
-            }
-        }
-        
-        // 開始自動滾動
-        function startAutoScroll() {
-            if (autoScrollInterval) stopAutoScroll();
-            autoScrollInterval = setInterval(() => {
-                if (isPlaying) {
-                    scrollToNext();
-                }
-            }, scrollSpeed * 1000);
-        }
-        
-        // 更新速度
-        function updateSpeed() {
-            scrollSpeed = parseFloat(document.getElementById('speedSlider').value);
-            document.getElementById('speedValue').innerText = scrollSpeed;
-            if (isPlaying) {
-                startAutoScroll();
-            }
-        }
-        
-        // 滑鼠懸停時暫停
-        container.addEventListener('mouseenter', () => {
-            isPlaying = false;
-            statusDiv.innerHTML = '⏸ 滑鼠在相簿上，已暫停';
-        });
-        
-        container.addEventListener('mouseleave', () => {
-            isPlaying = true;
-            statusDiv.innerHTML = '⚡ 自動滑動中...';
-        });
-        
-        // 按鈕事件
-        document.getElementById('playBtn').addEventListener('click', () => {
-            isPlaying = true;
-            direction = 1;
-            startAutoScroll();
-            statusDiv.innerHTML = '▶ 自動播放中';
-        });
-        
-        document.getElementById('pauseBtn').addEventListener('click', () => {
-            isPlaying = false;
-            stopAutoScroll();
-            statusDiv.innerHTML = '⏸ 已暫停';
-        });
-        
-        document.getElementById('resetBtn').addEventListener('click', () => {
-            container.scrollTo({ left: 0, behavior: 'smooth' });
-            direction = 1;
-            statusDiv.innerHTML = '⟳ 已回到起點';
-        });
-        
-        document.getElementById('speedSlider').addEventListener('input', updateSpeed);
-        
-        // 啟動自動滾動
-        startAutoScroll();
-        
-        // 視窗大小改變時重新計算
-        window.addEventListener('resize', () => {
-            // 不需要重新啟動，只是重新計算寬度
-        });
+        // 啟用所有行的拖曳功能
+        enableDragScroll('scroll1');
+        enableDragScroll('scroll2');
+        enableDragScroll('scroll3');
     </script>
 </body>
 </html>
