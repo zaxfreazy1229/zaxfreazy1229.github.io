@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,57 +9,229 @@
             text-align: center;
             background-color: #f5f5f5;
             padding: 20px;
+            margin: 0;
         }
         h1 {
             color: #333;
+            margin-bottom: 10px;
         }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        /* 水平滾動容器 */
+        .scroll-container {
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            padding: 20px 0;
+            scroll-behavior: smooth;
+            cursor: grab;
+        }
+        
+        .scroll-container:active {
+            cursor: grabbing;
+        }
+        
+        /* 滾動條樣式（美化） */
+        .scroll-container::-webkit-scrollbar {
+            height: 10px;
+        }
+        
+        .scroll-container::-webkit-scrollbar-track {
+            background: #ddd;
+            border-radius: 10px;
+        }
+        
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        
+        .scroll-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* 照片卡片 */
         .gallery {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            display: inline-flex;
             gap: 20px;
-            margin-top: 20px;
+            padding: 0 20px;
         }
+        
         .photo {
             background: white;
             padding: 15px;
             border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            width: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            width: 280px;
+            display: inline-block;
+            white-space: normal;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+        
+        .photo:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        
         .photo img {
             width: 100%;
-            height: auto;
+            height: 200px;
+            object-fit: cover;
             border-radius: 8px;
         }
+        
         .photo p {
             margin-top: 10px;
             color: #666;
+            font-size: 14px;
+        }
+        
+        /* 按鈕樣式 */
+        .nav-buttons {
+            margin: 20px 0;
+        }
+        
+        button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #555;
+        }
+        
+        footer {
+            margin-top: 40px;
+            color: #999;
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome! 🎉</h1>
-    <p>大合照 #Welcome!</p>
+    <h1>📸 我的相簿</h1>
+    <p class="subtitle">歡迎來到我的伺服器！ | 共 9 張照片</p>
 
-    <div class="gallery">
-        <!-- 照片 1 -->
-        <div class="photo">
-            <img src="20260208_020939000_iOS.jpg" alt="大合照">
-            <p>大合照</p>
-        </div>
+    <!-- 按鈕導航 -->
+    <div class="nav-buttons">
+        <button onclick="scrollLeft()">◀ 向左滑</button>
+        <button onclick="scrollRight()">向右滑 ▶</button>
+    </div>
 
-        <!-- 照片 2 -->
-        <div class="photo">
-            <img src="IMG_20260124_145424.jpg" alt="照片描述">
-            <p>黎裏小院</p>
-        </div>
+    <!-- 水平滾動區域 -->
+    <div class="scroll-container" id="scrollContainer">
+        <div class="gallery">
+            <!-- 照片 1 -->
+            <div class="photo">
+                <img src="20260208_020939000_iOS.jpg" alt="大合照">
+                <p>大合照 1</p>
+            </div>
 
-        <!-- 照片 3 -->
-        <div class="photo">
-            <img src="IMG_20260124_145529.jpg" alt="照片描述">
-            <p>黎裏小院BiliBili</p>
+            <!-- 照片 2 -->
+            <div class="photo">
+                <img src="IMG_20260124_145424.jpg" alt="照片">
+                <p>照片 2</p>
+            </div>
+
+            <!-- 照片 3 -->
+            <div class="photo">
+                <img src="IMG_20260124_145529.jpg" alt="照片">
+                <p>照片 3</p>
+            </div>
+
+            <!-- 👇 這裡放新的 6 張照片，複製貼上並改檔名 -->
+            
+            <!-- 照片 4 -->
+            <div class="photo">
+                <img src="IMG_20260124_140959.jpg" alt="照片">
+                <p>照片 4</p>
+            </div>
+
+            <!-- 照片 5 -->
+            <div class="photo">
+                <img src="IMG_20260124_141207.jpg" alt="照片">
+                <p>照片 5</p>
+            </div>
+
+            <!-- 照片 6 -->
+            <div class="photo">
+                <img src="IMG_20260124_145756.jpg" alt="照片">
+                <p>照片 6</p>
+            </div>
+
+            <!-- 照片 7 -->
+            <div class="photo">
+                <img src="mmexport1769262363531.jpg" alt="照片">
+                <p>照片 7</p>
+            </div>
+
+            <!-- 照片 8 -->
+            <div class="photo">
+                <img src="mmexport1769304880414.jpg" alt="照片">
+                <p>照片 8</p>
+            </div>
+
+            <!-- 照片 9 -->
+            <div class="photo">
+                <img src="mmexport1769304889558.jpg" alt="照片">
+                <p>照片 9</p>
+            </div>
         </div>
     </div>
+
+    <footer>
+        滑動瀏覽更多照片 ✨
+    </footer>
+
+    <script>
+        const container = document.getElementById('scrollContainer');
+        
+        function scrollLeft() {
+            container.scrollBy({ left: -300, behavior: 'smooth' });
+        }
+        
+        function scrollRight() {
+            container.scrollBy({ left: 300, behavior: 'smooth' });
+        }
+        
+        // 支援滑鼠拖曳滾動
+        let isDown = false;
+        let startX;
+        let scrollLeftStart;
+
+        container.addEventListener('mousedown', (e) => {
+            isDown = true;
+            container.style.cursor = 'grabbing';
+            startX = e.pageX - container.offsetLeft;
+            scrollLeftStart = container.scrollLeft;
+        });
+
+        container.addEventListener('mouseleave', () => {
+            isDown = false;
+            container.style.cursor = 'grab';
+        });
+
+        container.addEventListener('mouseup', () => {
+            isDown = false;
+            container.style.cursor = 'grab';
+        });
+
+        container.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - container.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            container.scrollLeft = scrollLeftStart - walk;
+        });
+    </script>
 </body>
 </html>
