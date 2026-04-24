@@ -5,69 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>📸 我的相簿</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #f0f2f5;
+            --card-bg: white;
+            --text-color: #333;
+            --navbar: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        [data-theme="dark"] {
+            --bg: #1a1a2e;
+            --card-bg: #1e1e2e;
+            --text-color: #eee;
+            --navbar: linear-gradient(135deg, #1e1e2e 0%, #16213e 100%);
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg);
             min-height: 100vh;
             padding: 20px;
+            transition: all 0.3s ease;
         }
 
-        /* 頂部導航欄 */
         .navbar {
-            background: white;
+            background: var(--navbar);
             border-radius: 20px;
             padding: 15px 25px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .navbar-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .back-btn {
-            background: #667eea;
+        .navbar-left { display: flex; align-items: center; gap: 15px; }
+        .back-btn, .theme-btn {
+            background: rgba(255,255,255,0.2);
             border: none;
             color: white;
-            font-size: 16px;
-            cursor: pointer;
             padding: 8px 20px;
             border-radius: 25px;
-            transition: background 0.3s;
+            cursor: pointer;
         }
 
-        .back-btn:hover {
-            background: #764ba2;
-        }
-
-        .navbar h1 {
-            font-size: 24px;
-            color: #333;
-        }
-
-        .navbar p {
-            color: #999;
-            font-size: 14px;
-        }
-
-        /* 每一行的容器 */
         .row {
-            background: white;
+            background: var(--card-bg);
             border-radius: 20px;
-            padding: 20px 0;
+            padding: 20px;
             margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .row-title {
@@ -75,10 +61,8 @@
             font-weight: bold;
             color: #667eea;
             margin-bottom: 15px;
-            padding: 0 20px;
         }
 
-        /* 水平滾動容器 */
         .scroll-container {
             overflow-x: auto;
             overflow-y: hidden;
@@ -88,48 +72,25 @@
             cursor: grab;
         }
 
-        .scroll-container:active {
-            cursor: grabbing;
-        }
+        .scroll-container::-webkit-scrollbar { height: 8px; }
+        .scroll-container::-webkit-scrollbar-track { background: #e0e0e0; border-radius: 10px; }
+        .scroll-container::-webkit-scrollbar-thumb { background: #667eea; border-radius: 10px; }
 
-        /* 滾動條樣式 */
-        .scroll-container::-webkit-scrollbar {
-            height: 8px;
-        }
+        .gallery { display: inline-flex; gap: 20px; padding: 0 10px; }
 
-        .scroll-container::-webkit-scrollbar-track {
-            background: #e0e0e0;
-            border-radius: 10px;
-        }
-
-        .scroll-container::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 10px;
-        }
-
-        /* 照片卡片容器 */
-        .gallery {
-            display: inline-flex;
-            gap: 20px;
-            padding: 0 20px;
-        }
-
-        /* 照片卡片 */
         .photo {
-            background: #f8f9fa;
+            background: var(--card-bg);
             padding: 12px;
             border-radius: 15px;
             width: 260px;
             display: inline-block;
             white-space: normal;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
         }
 
-        .photo:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
+        .photo:hover { transform: translateY(-5px); }
 
         .photo img {
             width: 100%;
@@ -140,20 +101,22 @@
 
         .photo p {
             margin-top: 10px;
-            color: #666;
+            color: var(--text-color);
             font-size: 14px;
             text-align: center;
+            cursor: text;
         }
 
-        /* 導航按鈕 */
-        .nav-buttons {
-            margin-top: 15px;
-            padding: 0 20px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
+        .edit-icon {
+            font-size: 12px;
+            margin-left: 5px;
+            color: #999;
+            cursor: pointer;
         }
 
+        .edit-icon:hover { color: #667eea; }
+
+        .nav-buttons { margin-top: 15px; display: flex; justify-content: center; gap: 15px; }
         .nav-buttons button {
             background: #667eea;
             color: white;
@@ -161,51 +124,55 @@
             padding: 8px 25px;
             border-radius: 25px;
             cursor: pointer;
-            font-size: 14px;
-            transition: background 0.3s;
         }
 
-        .nav-buttons button:hover {
-            background: #764ba2;
+        /* 放大圖片 modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
         }
 
-        footer {
-            text-align: center;
-            color: rgba(255,255,255,0.8);
-            margin-top: 20px;
-            font-size: 14px;
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
         }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+        }
+
+        footer { text-align: center; color: #999; margin-top: 20px; }
     </style>
 </head>
 <body>
     <div class="navbar">
         <div class="navbar-left">
             <button class="back-btn" onclick="goBack()">← 返回首頁</button>
-            <div>
-                <h1>📸 我的相簿</h1>
-                <p>生活瞬間 | 共9張照片</p>
-            </div>
+            <h1>📸 我的相簿</h1>
         </div>
+        <button class="theme-btn" onclick="toggleTheme()">🌙</button>
     </div>
 
-    <!-- 第一行：照片 1-3 -->
+    <!-- 第一行 -->
     <div class="row">
         <div class="row-title">📷 回憶精選 ①</div>
         <div class="scroll-container" id="scroll1">
-            <div class="gallery">
-                <div class="photo">
-                    <img src="20260208_020939000_iOS.jpg" alt="大合照" onerror="this.src='https://via.placeholder.com/260x180?text=圖片+載入失敗'">
-                    <p>大合照</p>
-                </div>
-                <div class="photo">
-                    <img src="IMG_20260124_145424.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/260x180?text=圖片+載入失敗'">
-                    <p>美好時光</p>
-                </div>
-                <div class="photo">
-                    <img src="IMG_20260124_145529.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/260x180?text=圖片+載入失敗'">
-                    <p>燦爛笑容</p>
-                </div>
-            </div>
+            <div class="gallery" id="gallery1"></div>
         </div>
         <div class="nav-buttons">
             <button onclick="scrollRow('scroll1', -280)">◀ 向左</button>
@@ -213,24 +180,11 @@
         </div>
     </div>
 
-    <!-- 第二行：照片 4-6 -->
+    <!-- 第二行 -->
     <div class="row">
         <div class="row-title">📷 回憶精選 ②</div>
         <div class="scroll-container" id="scroll2">
-            <div class="gallery">
-                <div class="photo">
-                    <img src="IMG_20260124_140959.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/260x180?text=圖片+載入失敗'">
-                    <p>風景如畫</p>
-                </div>
-                <div class="photo">
-                    <img src="IMG_20260124_141207.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/260x180?text=圖片+載入失敗'">
-                    <p>午後時光</p>
-                </div>
-                <div class="photo">
-                    <img src="IMG_20260124_145756.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/260x180?text=圖片+載入失敗'">
-                    <p>夕陽美景</p>
-                </div>
-            </div>
+            <div class="gallery" id="gallery2"></div>
         </div>
         <div class="nav-buttons">
             <button onclick="scrollRow('scroll2', -280)">◀ 向左</button>
@@ -238,73 +192,143 @@
         </div>
     </div>
 
-    <!-- 第三行：照片 7-9 -->
+    <!-- 第三行 -->
     <div class="row">
         <div class="row-title">📷 回憶精選 ③</div>
         <div class="scroll-container" id="scroll3">
-            <div class="gallery">
-                <div class="photo">
-                    <img src="mmexport1769262363531.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/260x180?text=圖片+載入失敗'">
-                    <p>開心時刻</p>
-                </div>
-                <div class="photo">
-                    <img src="mmexport1769304880414.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/260x180?text=圖片+載入失敗'">
-                    <p>珍貴回憶</p>
-                </div>
-                <div class="photo">
-                    <img src="mmexport1769304889558.jpg" alt="照片" onerror="this.src='https://via.placeholder.com/260x180?text=圖片+載入失敗'">
-                    <p>快樂相聚</p>
-                </div>
-            </div>
+            <div class="gallery" id="gallery3"></div>
         </div>
         <div class="nav-buttons">
-            <button onclick="scrollRow('scroll2', -280)">◀ 向左</button>
-            <button onclick="scrollRow('scroll2', 280)">向右 ▶</button>
+            <button onclick="scrollRow('scroll3', -280)">◀ 向左</button>
+            <button onclick="scrollRow('scroll3', 280)">向右 ▶</button>
         </div>
     </div>
 
-    <footer>
-        👆 每一行都可以獨立左右滑動 | 也可以用滑鼠直接拖曳
-    </footer>
+    <footer>👆 點擊照片可放大 | 點擊文字可編輯說明</footer>
+
+    <!-- 放大圖片 Modal -->
+    <div class="modal" id="imageModal" onclick="closeModal()">
+        <span class="modal-close">&times;</span>
+        <img id="modalImage" src="" alt="">
+    </div>
 
     <script>
-        // 返回首頁
-        function goBack() {
-            window.location.href = 'index.html';
+        // 照片資料
+        const photos = {
+            row1: [
+                { src: "20260208_020939000_iOS.jpg", caption: "大合照" },
+                { src: "IMG_20260124_145424.jpg", caption: "美好時光" },
+                { src: "IMG_20260124_145529.jpg", caption: "燦爛笑容" }
+            ],
+            row2: [
+                { src: "IMG_20260124_140959.jpg", caption: "風景如畫" },
+                { src: "IMG_20260124_141207.jpg", caption: "午後時光" },
+                { src: "IMG_20260124_145756.jpg", caption: "夕陽美景" }
+            ],
+            row3: [
+                { src: "mmexport1769262363531.jpg", caption: "開心時刻" },
+                { src: "mmexport1769304880414.jpg", caption: "珍貴回憶" },
+                { src: "mmexport1769304889558.jpg", caption: "快樂相聚" }
+            ]
+        };
+
+        // 載入儲存的說明
+        function loadCaptions() {
+            for (let row in photos) {
+                photos[row].forEach((photo, idx) => {
+                    const saved = localStorage.getItem(`caption_${photo.src}`);
+                    if (saved) photo.caption = saved;
+                });
+            }
         }
 
-        // 滑動函數
+        // 儲存說明
+        function saveCaption(src, newCaption) {
+            localStorage.setItem(`caption_${src}`, newCaption);
+        }
+
+        // 渲染相簿
+        function renderGallery() {
+            for (let i = 1; i <= 3; i++) {
+                const gallery = document.getElementById(`gallery${i}`);
+                if (!gallery) continue;
+                gallery.innerHTML = '';
+                const rowPhotos = photos[`row${i}`];
+                if (!rowPhotos) continue;
+                
+                rowPhotos.forEach((photo, idx) => {
+                    const photoDiv = document.createElement('div');
+                    photoDiv.className = 'photo';
+                    
+                    const img = document.createElement('img');
+                    img.src = photo.src;
+                    img.alt = photo.caption;
+                    img.onerror = () => { img.src = 'https://via.placeholder.com/260x180?text=圖片+載入失敗'; };
+                    img.onclick = (e) => {
+                        e.stopPropagation();
+                        openModal(photo.src);
+                    };
+                    
+                    const p = document.createElement('p');
+                    p.innerHTML = `${escapeHtml(photo.caption)} <span class="edit-icon" onclick="editCaption('${photo.src}', this)">✏️</span>`;
+                    
+                    photoDiv.appendChild(img);
+                    photoDiv.appendChild(p);
+                    gallery.appendChild(photoDiv);
+                });
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function editCaption(src, element) {
+            const currentCaption = localStorage.getItem(`caption_${src}`) || 
+                [...photos.row1, ...photos.row2, ...photos.row3].find(p => p.src === src)?.caption || '';
+            const newCaption = prompt('編輯照片說明：', currentCaption);
+            if (newCaption && newCaption.trim()) {
+                localStorage.setItem(`caption_${src}`, newCaption.trim());
+                for (let row in photos) {
+                    const photo = photos[row].find(p => p.src === src);
+                    if (photo) photo.caption = newCaption.trim();
+                }
+                renderGallery();
+            }
+        }
+
+        function openModal(src) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.style.display = 'flex';
+            modalImg.src = src;
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        function goBack() { window.location.href = 'index.html'; }
+
         function scrollRow(containerId, distance) {
             const container = document.getElementById(containerId);
             container.scrollBy({ left: distance, behavior: 'smooth' });
         }
 
-        // 為每個滾動容器添加滑鼠拖曳功能
         function enableDragScroll(containerId) {
             const container = document.getElementById(containerId);
             if (!container) return;
-            
-            let isDown = false;
-            let startX;
-            let scrollLeftStart;
-            
+            let isDown = false, startX, scrollLeftStart;
             container.addEventListener('mousedown', (e) => {
                 isDown = true;
                 container.style.cursor = 'grabbing';
                 startX = e.pageX - container.offsetLeft;
                 scrollLeftStart = container.scrollLeft;
             });
-            
-            container.addEventListener('mouseleave', () => {
-                isDown = false;
-                container.style.cursor = 'grab';
-            });
-            
-            container.addEventListener('mouseup', () => {
-                isDown = false;
-                container.style.cursor = 'grab';
-            });
-            
+            container.addEventListener('mouseleave', () => { isDown = false; container.style.cursor = 'grab'; });
+            container.addEventListener('mouseup', () => { isDown = false; container.style.cursor = 'grab'; });
             container.addEventListener('mousemove', (e) => {
                 if (!isDown) return;
                 e.preventDefault();
@@ -313,8 +337,23 @@
                 container.scrollLeft = scrollLeftStart - walk;
             });
         }
-        
-        // 啟用所有行的拖曳功能
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.getAttribute('data-theme') === 'dark') {
+                html.removeAttribute('data-theme');
+                localStorage.setItem('galleryTheme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                localStorage.setItem('galleryTheme', 'dark');
+            }
+        }
+
+        const savedTheme = localStorage.getItem('galleryTheme');
+        if (savedTheme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+
+        loadCaptions();
+        renderGallery();
         enableDragScroll('scroll1');
         enableDragScroll('scroll2');
         enableDragScroll('scroll3');
