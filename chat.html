@@ -34,6 +34,71 @@
             flex-direction: column;
             overflow: hidden;
             transition: all 0.3s ease;
+            animation: fadeInUp 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes heartFloat {
+            0% {
+                transform: scale(0) translateY(0);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2) translateY(-30px);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(0) translateY(-80px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
         }
 
         .navbar {
@@ -43,9 +108,11 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            animation: slideInRight 0.5s ease;
         }
 
         .navbar-left { display: flex; align-items: center; gap: 15px; }
+        
         .back-btn, .refresh-btn, .theme-btn {
             background: rgba(255,255,255,0.2);
             border: none;
@@ -54,9 +121,17 @@
             cursor: pointer;
             padding: 8px 15px;
             border-radius: 10px;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
         }
-        .back-btn:hover, .refresh-btn:hover, .theme-btn:hover { background: rgba(255,255,255,0.3); }
+        
+        .back-btn:hover, .refresh-btn:hover, .theme-btn:hover { 
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+
+        .refresh-btn:active {
+            animation: spin 0.5s ease;
+        }
 
         .messages-area {
             flex: 1;
@@ -64,37 +139,72 @@
             padding: 20px;
         }
 
-        .message { margin-bottom: 15px; display: flex; flex-direction: column; }
-        .message-left { align-items: flex-start; }
-        .message-right { align-items: flex-end; }
+        .message { 
+            margin-bottom: 15px; 
+            display: flex; 
+            flex-direction: column;
+            animation: slideInLeft 0.4s ease;
+        }
+        
+        .message-right {
+            align-items: flex-end;
+            animation: slideInRight 0.4s ease;
+        }
 
         .message-bubble {
             max-width: 70%;
             padding: 10px 15px;
             border-radius: 18px;
             word-wrap: break-word;
+            transition: all 0.2s ease;
         }
+        
         .message-left .message-bubble {
             background: var(--message-left);
             color: var(--text-color);
             border: 1px solid var(--border);
             border-bottom-left-radius: 4px;
         }
+        
         .message-right .message-bubble {
             background: #667eea;
             color: white;
             border-bottom-right-radius: 4px;
         }
 
+        .message-bubble:hover {
+            transform: scale(1.02);
+        }
+
         .message-meta { font-size: 11px; color: #999; margin-top: 5px; margin-left: 12px; margin-right: 12px; }
-        .loading { text-align: center; color: #999; padding: 20px; }
+        
+        .loading { 
+            text-align: center; 
+            color: #999; 
+            padding: 20px;
+            animation: pulse 1.5s infinite;
+        }
 
         .input-area {
             padding: 20px;
             background: var(--card-bg);
             border-top: 1px solid var(--border);
+            animation: slideInUp 0.5s ease;
         }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .input-group { display: flex; gap: 10px; margin-bottom: 10px; }
+        
         .input-group input {
             flex: 1;
             padding: 12px;
@@ -104,7 +214,15 @@
             outline: none;
             background: var(--card-bg);
             color: var(--text-color);
+            transition: all 0.3s ease;
         }
+        
+        .input-group input:focus {
+            border-color: #667eea;
+            transform: scale(1.02);
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
         .message-input {
             width: 100%;
             padding: 12px;
@@ -117,7 +235,15 @@
             margin-bottom: 10px;
             background: var(--card-bg);
             color: var(--text-color);
+            transition: all 0.3s ease;
         }
+        
+        .message-input:focus {
+            border-color: #667eea;
+            transform: scale(1.01);
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
         button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -125,11 +251,55 @@
             padding: 12px 30px;
             border-radius: 25px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        button:disabled { opacity: 0.5; }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
         .status { text-align: center; font-size: 12px; color: #999; margin-top: 10px; }
         .small-btn { background: transparent; border: 1px solid var(--border); color: var(--text-color); padding: 12px 15px; }
-        .small-btn:hover { background: rgba(0,0,0,0.05); transform: none; }
+        .small-btn:hover { background: rgba(0,0,0,0.05); transform: scale(1.02); }
+
+        /* 愛心漂浮特效容器 */
+        .heart-container {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 24px;
+            animation: heartFloat 1s ease-out forwards;
+        }
     </style>
 </head>
 <body>
@@ -140,7 +310,7 @@
         </div>
         <div>
             <button class="theme-btn" onclick="toggleTheme()">🌙</button>
-            <button class="refresh-btn" onclick="loadMessages()">🔄</button>
+            <button class="refresh-btn" onclick="loadMessagesWithAnimation()">🔄</button>
         </div>
     </div>
 
@@ -152,9 +322,11 @@
             <button id="clearNameBtn" class="small-btn">🗑️</button>
         </div>
         <textarea id="messageInput" class="message-input" rows="2" placeholder="輸入訊息... (按 Enter 發送)"></textarea>
-        <button id="sendBtn">📤 發送訊息</button>
+        <button id="sendBtn" onclick="sendMessageWithHeart()">📤 發送訊息</button>
         <div class="status" id="status">✅ 已連線</div>
     </div>
+
+    <div class="heart-container" id="heartContainer"></div>
 
     <audio id="notificationSound" preload="auto">
         <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
@@ -175,9 +347,41 @@
         const clearNameBtn = document.getElementById('clearNameBtn');
         const statusDiv = document.getElementById('status');
         const notificationSound = document.getElementById('notificationSound');
+        const heartContainer = document.getElementById('heartContainer');
         
         let currentName = localStorage.getItem('chatName') || '';
         nameInput.value = currentName;
+        
+        // 愛心噴發特效
+        function createHeart(x, y) {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.innerHTML = ['❤️', '💖', '💗', '💓', '💕', '💘'][Math.floor(Math.random() * 6)];
+            heart.style.left = (x || window.innerWidth / 2) + 'px';
+            heart.style.bottom = (y || 100) + 'px';
+            heartContainer.appendChild(heart);
+            setTimeout(() => heart.remove(), 1000);
+        }
+
+        // 發送時噴愛心
+        function sendMessageWithHeart() {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    createHeart(window.innerWidth / 2 + (Math.random() - 0.5) * 100, 100);
+                }, i * 50);
+            }
+            sendMessage();
+        }
+
+        // 載入時動畫
+        async function loadMessagesWithAnimation() {
+            const refreshBtn = document.querySelector('.refresh-btn');
+            refreshBtn.style.animation = 'spin 0.5s ease';
+            setTimeout(() => {
+                refreshBtn.style.animation = '';
+            }, 500);
+            await loadMessages();
+        }
         
         function toggleTheme() {
             const html = document.documentElement;
@@ -225,16 +429,18 @@
                     return;
                 }
                 
-                // 檢查新訊息
                 if (!wasEmpty && comments.length > lastMessageCount && lastMessageCount !== 0) {
                     playNotification();
                     setStatus(`🔔 有 ${comments.length - lastMessageCount} 則新訊息`);
+                    for (let i = 0; i < 3; i++) {
+                        setTimeout(() => createHeart(), i * 100);
+                    }
                 }
                 
                 lastMessageCount = comments.length;
                 
                 messagesArea.innerHTML = '';
-                comments.reverse().forEach(comment => {
+                comments.reverse().forEach((comment, index) => {
                     const messageDiv = document.createElement('div');
                     let userName = '匿名';
                     let content = comment.body;
@@ -245,6 +451,7 @@
                     }
                     const isOwn = (userName === currentName);
                     messageDiv.className = `message ${isOwn ? 'message-right' : 'message-left'}`;
+                    messageDiv.style.animationDelay = `${index * 0.05}s`;
                     const date = new Date(comment.created_at);
                     const timeStr = `${date.getMonth()+1}/${date.getDate()} ${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
                     messageDiv.innerHTML = `
@@ -310,10 +517,10 @@
             setStatus('🔄 名字已清除');
         }
         
-        sendBtn.addEventListener('click', sendMessage);
+        sendBtn.addEventListener('click', sendMessageWithHeart);
         clearNameBtn.addEventListener('click', clearName);
         messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessageWithHeart(); }
         });
         nameInput.addEventListener('change', () => {
             const newName = nameInput.value.trim();
@@ -321,7 +528,7 @@
         });
         
         loadMessages();
-        setInterval(loadMessages, 1000);
+        setInterval(loadMessages, 2000);
     </script>
 </body>
 </html>
