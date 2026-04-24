@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>聊天室 💬</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* 頂部導航欄 */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .navbar h1 {
+            font-size: 20px;
+        }
+
+        .refresh-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* 訊息區域 */
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        /* 訊息樣式 */
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-left {
+            align-items: flex-start;
+        }
+
+        .message-right {
+            align-items: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+
+        .message-left .message-bubble {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-right .message-bubble {
+            background: #667eea;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-meta {
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+            margin-left: 12px;
+            margin-right: 12px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+        }
+
+        /* 輸入區域 */
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #667eea;
+        }
+
+        .message-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            resize: none;
+            font-family: inherit;
+            margin-bottom: 10px;
+        }
+
+        .message-input:focus {
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .status {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        .small-btn {
+            background: transparent;
+            border: 1px solid #ddd;
+            color: #666;
+            padding: 12px 15px;
+        }
+
+        .small-btn:hover {
+            background: #f0f0f0;
+            transform: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-left">
+            <button class="back-btn" onclick="goBack()">← 返回</button>
+            <h1>💬 聊天室</h1>
+        </div>
+        <button class="refresh-btn" onclick="loadMessages()">🔄</button>
+    </div>
+
+    <div class="messages-area" id="messagesArea">
+        <div class="loading">📡 載入訊息中...</div>
+    </div>
+
+    <div class="input-area">
+        <div class="input-group">
+            <input type="text" id="nameInput" placeholder="你的名字" maxlength="20">
+            <button id="clearNameBtn" class="small-btn">🗑️</button>
+        </div>
+        <textarea id="messageInput" class="message-input" rows="2" placeholder="輸入訊息... (按 Enter 發送)"></textarea>
+        <button id="sendBtn">📤 發送訊息</button>
+        <div class="status" id="status">✅ 已連線</div>
+    </div>
+
+    <script>
+        const REPO_OWNER = 'zaxfreazy1229';
+        const REPO_NAME = 'zaxfreazy1229.github.io';
+        const ISSUE_NUMBER = 5;
+        
+        const messagesArea = document.getElementById('messagesArea');
+        const nameInput = document.getElementById('nameInput');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const clearNameBtn = document.getElementById('clearNameBtn');
+        const statusDiv = document.getElementById('status');
+        
+        let currentName = localStorage.getItem('chatName') || '';
+        nameInput.value = currentName;
+        
+        function setStatus(text, isError = false) {
+            statusDiv.textContent = text;
+            statusDiv.style.color = isError ? '#e74c3c' : '#999';
+            setTimeout(() => {
+                if (!isError) statusDiv.style.color = '#999';
+            }, 3000);
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        async function loadMessages() {
+            try {
+                messagesArea.innerHTML = '<div class="loading">📡 載入訊息中...</div>';
+                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${ISSUE_NUMBER}/comments?per_page=100`);
+                if (!response.ok) throw new Error('載入失敗');
+                const comments = await response.json();
+                
+                if (comments.length === 0) {
+                    messagesArea.innerHTML = '<div class="loading">💬 還沒有訊息，來發第一條吧！</div>';
+                    return;
+                }
+                
+                messagesArea.innerHTML = '';
+                comments.reverse().forEach(comment => {
+                    const messageDiv = document.createElement('div');
+                    let userName = '匿名';
+                    let content = comment.body;
+                    const pipeIndex = comment.body.indexOf('|');
+                    if (pipeIndex !== -1) {
+                        userName = comment.body.substring(0, pipeIndex);
+                        content = comment.body.substring(pipeIndex + 1);
+                    }
+                    const isOwn = (userName === currentName);
+                    messageDiv.className = `message ${isOwn ? 'message-right' : 'message-left'}`;
+                    const date = new Date(comment.created_at);
+                    const timeStr = `${date.getMonth()+1}/${date.getDate()} ${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
+                    messageDiv.innerHTML = `
+                        <div class="message-bubble">${escapeHtml(content)}</div>
+                        <div class="message-meta">${escapeHtml(userName)} · ${timeStr}</div>
+                    `;
+                    messagesArea.appendChild(messageDiv);
+                });
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+                setStatus(`✅ 已載入 ${comments.length} 則訊息`);
+            } catch (error) {
+                messagesArea.innerHTML = '<div class="loading">❌ 載入失敗，請重新整理</div>';
+                setStatus('❌ 載入失敗', true);
+            }
+        }
+        
+        async function sendMessage() {
+            const name = nameInput.value.trim();
+            const content = messageInput.value.trim();
+            if (!name) { setStatus('❌ 請輸入名字', true); return; }
+            if (!content) { setStatus('❌ 請輸入訊息', true); return; }
+            
+            localStorage.setItem('chatName', name);
+            currentName = name;
+            
+            const token = localStorage.getItem('githubToken');
+            if (!token) {
+                const newToken = prompt('請輸入 GitHub Personal Access Token：');
+                if (!newToken) { setStatus('❌ 需要 Token 才能發送', true); return; }
+                localStorage.setItem('githubToken', newToken);
+            }
+            
+            const fullMessage = `${name}|${content}`;
+            sendBtn.disabled = true;
+            setStatus('📡 發送中...');
+            
+            try {
+                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${ISSUE_NUMBER}/comments`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `token ${localStorage.getItem('githubToken')}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ body: fullMessage })
+                });
+                if (!response.ok) throw new Error('發送失敗');
+                messageInput.value = '';
+                setStatus('✅ 發送成功！');
+                await loadMessages();
+            } catch (error) {
+                setStatus(`❌ 發送失敗: ${error.message}`, true);
+                if (error.message.includes('401')) {
+                    localStorage.removeItem('githubToken');
+                    setStatus('❌ Token 無效，請重新輸入', true);
+                }
+            } finally {
+                sendBtn.disabled = false;
+            }
+        }
+        
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+        
+        function clearName() {
+            localStorage.removeItem('chatName');
+            nameInput.value = '';
+            currentName = '';
+            setStatus('🔄 名字已清除');
+        }
+        
+        sendBtn.addEventListener('click', sendMessage);
+        clearNameBtn.addEventListener('click', clearName);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        nameInput.addEventListener('change', () => {
+            const newName = nameInput.value.trim();
+            if (newName) {
+                localStorage.setItem('chatName', newName);
+                currentName = newName;
+                loadMessages();
+            }
+        });
+        
+        loadMessages();
+        setInterval(loadMessages, 10000);
+    </script>
+</body>
+</html>
